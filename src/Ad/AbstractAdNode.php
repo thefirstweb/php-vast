@@ -305,4 +305,63 @@ abstract class AbstractAdNode extends AbstractNode
 
         return $this;
     }
+
+    /**
+     * Implement fallback Google IMA SDK
+     * ref: https://github.com/googleads/videojs-ima/issues/387
+     *
+     * @param string $type type
+     * @param integer $index fallback_index
+     * @return self
+     */
+    public function addExtension_fallback($type, $index): self
+    {
+        // get container
+        if (!$this->extensionsDomElement) {
+            // get extensions tag
+            $this->extensionsDomElement = $this->adDomElement->getElementsByTagName('Extensions')->item(0);
+            if (!$this->extensionsDomElement) {
+                $this->extensionsDomElement = $this->adDomElement->ownerDocument->createElement('Extensions');
+                $this->getDomElement()->appendChild($this->extensionsDomElement);
+            }
+        }
+
+        // Creative dom element
+        $extensionDomElement = $this->extensionsDomElement->ownerDocument->createElement('Extension');
+        $this->extensionsDomElement->appendChild($extensionDomElement);
+
+        $extensionDomElement->setAttribute('type', $type);
+        $extensionDomElement->setAttribute('fallback_index', strval($index));
+
+        return $this;
+    }
+
+    /**
+     * Add VPAID (for presenting Banner Ad)
+     * 
+     * @param string $mediafile
+     * @param string $adparameters
+     * @param int $duration
+     * @return void
+     */
+    public function createSiteMajiBannerCreative($mediafile, $adparameters, $duration) {
+        $creative = $this->createLinearCreative();
+        $linear = $creative->getDomElement()->childNodes->item(0);
+
+        // Media
+        $media = $creative->createMediaFile($mediafile);
+        $media->setAdDuration(strval($duration));
+        $media->setApiFramework('VPAID');
+        $media->setType('application/javascript');
+        $media->setUrl($mediafile);
+
+        // AdParameters
+        $cdata = $linear->ownerDocument->createCDATASection(strval($adparameters));
+        $ad_param = $linear->ownerDocument->createElement('AdParameters');
+        $ad_param->appendChild($cdata);
+
+        $linear->appendChild($ad_param);
+
+        return $this;
+    }
 }

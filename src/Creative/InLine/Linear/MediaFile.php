@@ -160,4 +160,15 @@ class MediaFile
 
         return $this;
     }
+
+    /**
+     * @param string $value
+     * @return self
+     */
+    public function setAdDuration(string $value): self
+    {
+        $this->domElement->setAttribute('adDuration', (string) $value);
+
+        return $this;
+    }
 }

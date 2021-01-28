@@ -5,6 +5,33 @@ PHP-VAST
 [![Total Downloads](http://img.shields.io/packagist/dt/sokil/php-vast.svg?1)](https://packagist.org/packages/sokil/php-vast)
 [![Coverage Status](https://coveralls.io/repos/github/sokil/php-vast/badge.svg?branch=master&1)](https://coveralls.io/github/sokil/php-vast?branch=master)
 
+## Modified version of FirstWeb
+
+1. Implement IMA SDK goole fallback
+
+    **Example:**
+
+    ```php
+    $document = (new Factory)->create('4.1');
+    $document->createWrapperAdSection()
+        ->addExtension_fallback('waterfall', 0);
+    ```
+
+2. Implement SiteMaji VPAID
+
+    **Example:**
+
+    ```php
+    $document = (new Factory)->create('4.1');
+    $document->createInLineAdSection()
+        ->createSiteMajiBannerCreative(
+            'https://example.com/example.js', // javascript file
+            '{"test":123}', // parameters for js
+            30 // length (sec)
+        );
+
+    ```
+
 :star: VAST Ad generator and parser library on PHP.
 
 ## Specs
